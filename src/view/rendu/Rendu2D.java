@@ -9,11 +9,10 @@ import utils.Ecoutable;
 import utils.Ecouteur;
 import utils.Position;
 import view.RenderedZone;
-/**
- * Cette classe représente le rendu 2D d'un arbre.
- * Il est chargé de dessiner l'arbre en fonction de sa configuration.
- * Implémente le pattern Observer pour notifier la classe Fenêtre à chaque modification.
- * 
+/*
+ * Cette class représente le rendu 2D
+ * La class chargé de déssiner l'arbre issue de la configuration
+ * Il implémente le pattern  Observer. Le but est de notifier la class Fênetre a chaque fois qu'elle est modifiée
  * @author Patrice Z. D. COTCHO
  */
 public class Rendu2D extends JComponent implements Ecoutable {
@@ -26,46 +25,28 @@ public class Rendu2D extends JComponent implements Ecoutable {
     private float angle;
     public Graphics2D g2D;
 
-    /**
-     * Constructeur de la classe Rendu2D.
-     * 
-     * @param chaine La chaîne de configuration de l'arbre.
-     * @param angle L'angle de rotation pour les instructions de rotation.
-     */
     public Rendu2D(String chaine, float angle) {
         super();
-        this.listObserveurs = new ArrayList<>();
+        this.listObserveurs = new ArrayList<Ecouteur>();
         this.chaine = chaine;
         this.angle = angle;
     }
 
-    /**
-     * Définit la chaîne de configuration de l'arbre.
-     * 
-     * @param chaine La chaîne de configuration de l'arbre.
-     */
     public void setChaine(String chaine) {
         this.chaine = chaine;
     }
 
-    /**
-     * Définit l'angle de rotation pour les instructions de rotation.
-     * 
-     * @param angle L'angle de rotation.
-     */
     public void setAngle(float angle) {
         this.angle = angle;
     }
 
-    /**
-     * Redéfinition de la méthode paintComponent pour dessiner l'arbre.
-     */
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         this.g2D = (Graphics2D) g;
         this.g2D.setColor(Color.BLACK);
-
+        //this.g2D.scale(1.5, 0.5);
         float angleLocal = 0;
         int initX = Rendu2D.LARGEUR;
         int initY = Rendu2D.HAUTEUR;
@@ -94,39 +75,32 @@ public class Rendu2D extends JComponent implements Ecoutable {
                 endX = (int) (initX - 10 * Math.sin(Math.toRadians(angleLocal)));
                 endY = (int) (initY - 10 * Math.cos(Math.toRadians(angleLocal)));
                 this.g2D.drawLine(initX, initY, endX, endY);
+
             }
         }
     }
 
-    /**
-     * Définit une nouvelle configuration pour le rendu 2D de l'arbre.
-     * 
-     * @param chaine La nouvelle chaîne de configuration de l'arbre.
-     * @param angle Le nouvel angle de rotation pour les instructions de rotation.
-     */
     public void setRendu2D(String chaine, float angle){
         this.setChaine(chaine);
         this.setAngle(angle);
-        this.notifyAllEcouteur();
+        this.notifyAllObserveur();
     }
 
     @Override
-    public void addEcouteur(Ecouteur e) {
+    public void addObserveur(Ecouteur e) {
         this.listObserveurs.add(e);
     }
 
     @Override
-    public void removeEcouteur(Ecouteur e) {
+    public void removeObserveur(Ecouteur e) {
         this.listObserveurs.remove(e);
     }
 
     @Override
-    public void notifyAllEcouteur() {
+    public void notifyAllObserveur() {
         for (Ecouteur observeur : this.listObserveurs) {
             observeur.update(this);
         }
     }
 
 }
-
-

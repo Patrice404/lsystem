@@ -7,7 +7,6 @@ import model.*;
 import utils.GeneratorException;
 import view.*;
 import view.dialogue.*;
-import view.dialogue.Dialog;
 import view.rendu.*;
 
 import java.util.List;
@@ -32,7 +31,6 @@ public class AppController implements ActionListener {
      * @param listRegles La liste des règles utilisées par le générateur.
      */
 
-
     public AppController(Interface windows, Generator generateur, List<Rule> listRegles) {
         this.windows = windows;
         this.generateur = generateur;
@@ -40,10 +38,10 @@ public class AppController implements ActionListener {
         this.setListerner();
     }
 
-    /**
+    /*
      * Méthode permettant d'écouter les différents composants de l'interface.
      */
-    public void setListerner() {
+    private void setListerner() {
         this.windows.getMenu().getQuitte().addActionListener(this);
         this.windows.getConfiguration().getClearButton().addActionListener(this::clearButtonListener);
         this.windows.getConfiguration().getNewRulesButton().addActionListener(this::newRegleButtonListener);
@@ -63,14 +61,14 @@ public class AppController implements ActionListener {
 
     
 
-     /**
+      /**
      * Méthode appelée lorsqu'un bouton de génération est cliqué.
      * Elle récupère les données de configuration de l'interface, génère le rendu correspondant
      * et met à jour l'affichage en conséquence.
      * @param event L'événement déclenché par le clic sur le bouton.
      */
     
-    public void genererButtonListener(ActionEvent event) {
+    private void genererButtonListener(ActionEvent event) {
         if (goodConfiguration()) {
             // Récupération des données de configuration depuis la vue
             String axiom = this.windows.getConfiguration().getAxiom().getText().toUpperCase();
@@ -93,24 +91,40 @@ public class AppController implements ActionListener {
                     this.windows.getRendu2D().setRendu2D(this.generateur.generate(nbItt), angle);
                 } else {
                     this.windows.setRendu3D(new Rendu3D(this.generateur.generate(nbItt), angle));
-                    this.windows.update(this.windows.getRendu3D());
+
+                    //Ajout des ecouteurs sur les deux boutons qui gèrent le zoom
+                    this.windows.getZoneRendu().getZoomButton()
+                            .addActionListener((Event) -> this.windows.getRendu3D().scale += 0.01);
+                    this.windows.getZoneRendu().getDezoomButton()
+                            .addActionListener((Event) -> this.windows.getRendu3D().scale -= 0.01);
+                    //Mise à jours de la vue
+                    this.windows.getZoneRendu().getRendu().removeAll();
+                    this.windows.getZoneRendu().getRendu().add(this.windows.getRendu3D().glCanvas, BorderLayout.CENTER);
+                    
+                    this.windows.getZoneRendu().getRendu().repaint();
+                    this.windows.getZoneRendu().getRendu().setVisible(false);
+                    //this.windows.repaint();
+                    //this.windows.setVisible(false);
+                    this.windows.getZoneRendu().getRendu().setVisible(true);
+                    //this.windows.setVisible(true);
+
                 }
             } catch (GeneratorException e) {
                 this.errorSMS = e.getMessage();
-                new Dialog(windows,"Mauvaise configuration", this.errorSMS);
+                new ErrorDialog(windows, this.errorSMS);
             }
 
         } else {
             // Afficher un message d'erreur a l'ecran
-            new Dialog(windows,"Mauvaise configuration", errorSMS);
+            new ErrorDialog(windows, errorSMS);
         }
 
     }
 
-    /**
+    /*
      * Méthide qui répond au clique des boutons contenus dans la toolbar
      */
-    public void toolBarListener(ActionEvent event) {
+    private void toolBarListener(ActionEvent event) {
         if (event.getSource().equals(this.windows.getToolbar().getArbre1Button())) {
             // Axiom => F Regle => F:F[+F]F[-F][F]:40 && F:F[-F]F[+F][F]:60 Angle => 20°
             // Itteration => 5
@@ -134,9 +148,9 @@ public class AppController implements ActionListener {
 
         }
         if (event.getSource().equals(this.windows.getToolbar().getArbre3Button())) {
-            // Axiom => X Règle => X:F-[[X]]+<F[+FX]-X:100 && F:FF Angle => 22.5 Itteration => 5
+            // Axiom => X Règle => X:F-[[X]+X]+F[+FX]-X && F:FF Angle => 22.5 Itteration => 5
             List<String> regles = new ArrayList<>();
-            regles.add("X:F-[[X]]+<F[+FX]-X:100");
+            regles.add("X:F-[[X]+X]+F[+FX]-X:100");
             regles.add("F:FF:100");
            
             this.setConfiguration("X", 22.5f, 5, regles);
@@ -186,7 +200,7 @@ public class AppController implements ActionListener {
 
     }
 
-     /**
+    /*
      * Gestion dynamique de la création et la suppression de nouvelle règle
      * 
      * @ensure Ajouter un JTextField dans la partie configuration en cas de Clique
@@ -198,7 +212,7 @@ public class AppController implements ActionListener {
      * @ensure Ajouter un bouton permettant de supprimer le JTextField ajouté
      * 
      */
-    public void newRegleButtonListener(ActionEvent event) {
+    private void newRegleButtonListener(ActionEvent event) {
         List<JTextField> listeRegleTextField = this.windows.getConfiguration().getListeRegleTextField();
         List<JLabel> listeLabels = this.windows.getConfiguration().getListeLabels();
         JPanel configPanel = this.windows.getConfiguration().getConfigPanel();
@@ -208,6 +222,7 @@ public class AppController implements ActionListener {
         removeBtn.setFont(Configuration.FIELD_FONT);
         removeBtn.setBackground(Color.RED);
         JLabel ruleTexte = new JLabel("Règle " + (listeRegleTextField.size() + 1));
+        // ruleTexte.setFont(Configuration.FIELD_FONT);
         ruleTexte.setPreferredSize(new Dimension(55, 20));
         JTextField newregleJTextField = new JTextField();
         newregleJTextField.setPreferredSize(Configuration.FIELD_DIMENSION);
@@ -216,11 +231,12 @@ public class AppController implements ActionListener {
         JPanel newPanel = new JPanel();
         newPanel.setPreferredSize(Configuration.PANEL_DIMENSION);
         newPanel.setLayout(Configuration.PANEL_LAYOUT);
+
         newPanel.add(ruleTexte);
         newPanel.add(removeBtn);
         newPanel.add(newregleJTextField);
 
-        /**
+        /*
          * Comportement du clique sur le button x affiché a côté de la nouvelle règle
          * Listerner sur le bouton X ajouté en même temps que le JTextField
          */
@@ -249,12 +265,12 @@ public class AppController implements ActionListener {
         configPanel.setVisible(true);
     }
 
-     /**
+    /**
      * Méthode appelée lorsque l'utilisateur clique sur le bouton "Clear".
      * Elle réinitialise les champs de configuration et efface le rendu affiché.
      * @param e L'événement déclenché par le clic sur le bouton.
      */
-    public void clearButtonListener(ActionEvent e) {
+    private void clearButtonListener(ActionEvent e) {
         this.windows.getConfiguration().getAxiom().setText("");
         this.windows.getConfiguration().getAngle().setText("");
         this.windows.getConfiguration().getItteration().setText("");
@@ -265,6 +281,7 @@ public class AppController implements ActionListener {
         this.windows.getZoneRendu().getRendu().repaint();
         this.windows.getZoneRendu().getRendu().setVisible(false);
         this.windows.getZoneRendu().getRendu().setVisible(true);
+       // System.out.println("btnClear selected");
     }
 
     /**
@@ -272,7 +289,7 @@ public class AppController implements ActionListener {
      * Elle affiche une boîte de dialogue d'aide.
      * @param event L'événement déclenché par la sélection de l'option.
      */
-    public void helpItemListener(ActionEvent event) {
+    private void helpItemListener(ActionEvent event) {
         Help help = new Help();
         help.setVisible(true);
     }
@@ -288,12 +305,13 @@ public class AppController implements ActionListener {
             this.genererButtonListener(e);
         }
         if(e.getSource().equals(this.windows.getZoneRendu().getRendu3DBoutton())){
+            //System.out.println("Btn 3d clicked");
             this.genererButtonListener(e);
         }
 
     }
     
-    /**
+       /**
      * Méthode appelée lorsqu'un bouton de l'interface est cliqué.
      * Elle gère les actions à effectuer en fonction du bouton cliqué.
      * @param event L'événement déclenché par le clic sur le bouton.
@@ -305,12 +323,12 @@ public class AppController implements ActionListener {
         }
     }
    
-     /**
+    /**
      * Méthode qui vérifie si la configuration des paramètres est correcte.
      * @return true si la configuration est valide, sinon false.
      */
 
-    public boolean goodConfiguration() {
+    private boolean goodConfiguration() {
         String axiom = this.windows.getConfiguration().getAxiom().getText();
         List<JTextField> listeRegleTextField = this.windows.getConfiguration().getListeRegleTextField();
 
@@ -324,7 +342,7 @@ public class AppController implements ActionListener {
         try {
             int nbItt = Integer.parseInt(this.windows.getConfiguration().getItteration().getText());
             Float angle = Float.parseFloat(this.windows.getConfiguration().getAngle().getText());
-            if (nbItt < 1) {
+            if (nbItt > 15 || nbItt < 1) {
                 this.errorSMS = "Nombre d'ittération > 9 ou < 0. ";
                 return false;
             }
@@ -371,15 +389,15 @@ public class AppController implements ActionListener {
 
     }
 
-      /**
+     /**
      * Méthode permettant de définir la configuration initiale de l'interface graphique.
      * @param axiom Axiome de départ.
      * @param angle Angle de rotation.
      * @param nbItt Nombre d'itérations.
      * @param listRegles Liste des règles.
      */
-    
-    public void setConfiguration(String axiom, Float angle, int nbItt, List<String> listRegles) {
+
+    private void setConfiguration(String axiom, Float angle, int nbItt, List<String> listRegles) {
         this.windows.getConfiguration().getAxiom().setText(axiom);
         this.windows.getConfiguration().getAngle().setText(String.valueOf(angle));
         this.windows.getConfiguration().getItteration().setText(String.valueOf(nbItt));
@@ -403,7 +421,9 @@ public class AppController implements ActionListener {
 
     }
 
-    
+    /*
+     * 
+     */
     public Interface getWindows() {
         return this.windows;
     }

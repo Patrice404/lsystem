@@ -1,33 +1,31 @@
-/**
- * Cette classe représente la barre de menu qui apparaît sur l'interface graphique de l'utilisateur.
- * Elle permet d'accéder à différentes fonctionnalités telles que l'aide et la sortie de l'application.
- * 
- * @author Patrice D. Z. COTCHO
- */
 package view;
 
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 
+/*
+ * Cette classe represente la bar de menu qui apparait sur l'interface graphique de l'utilisateur
+ * @author Patrice D. Z. COTCHO
+ */
 public class Menu extends JMenuBar {
 
     private JMenuItem apropos;
     private JMenuItem quitte;
 
-    /**
-     * Constructeur de la classe Menu.
-     * Initialise la configuration du menu.
+    /*
+     * Constructeur de la class Menu
      */
     public Menu() {
         super();
         this.configureMenu();
+
     }
 
-    /**
-     * Méthode de configuration du menu.
-     * Initialise les éléments du menu et les ajoute à la barre de menu.
+    /*
+     * Méthode de configuration du menu
      */
     private void configureMenu() {
+
         this.apropos = new JMenuItem("Help");
         this.quitte = new JMenuItem("Exit");
         //quitte.setIcon(new ImageIcon("icons/exit.png"));
@@ -45,23 +43,15 @@ public class Menu extends JMenuBar {
         this.add(menuAide);
 
         this.setVisible(true);
+
     }
 
-    /**
-     * Récupère l'élément de menu "Help".
-     * 
-     * @return L'élément de menu "Help".
-     */
     public JMenuItem getApropos(){
         return this.apropos;
     }
 
-    /**
-     * Récupère l'élément de menu "Exit".
-     * 
-     * @return L'élément de menu "Exit".
-     */
     public JMenuItem getQuitte(){
         return this.quitte;
     }
+
 }

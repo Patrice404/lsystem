@@ -17,40 +17,47 @@
  cd src && chmod 711 App.sh
 ./App.sh
 ```
-## Structure du code source
+## Structure du Projet
 
 
 
-src
-    ├── App.sh
-    ├── controler
-    │   └── AppController.java
-    ├── Main.java
-    ├── model
-    │   ├── Generator.java
-    │   └── Rule.java
-    ├── test
-    │   ├── TestGenerateur.java
-    │   └── TestRegle.java
-    ├── utils
-    │   ├── Ecoutable.java
-    │   ├── EcoutableModele.java
-    │   ├── Ecouteur.java
-    │   ├── Function.java
-    │   ├── GeneratorException.java
-    │   └── Position.java
-    └── view
-        ├── Configuration.java
-        ├── dialogue
-        │   ├── Dialog.java
-        │   └── Help.java
-        ├── Interface.java
-        ├── Menu.java
-        ├── RenderedZone.java
-        ├── rendu
-        │   ├── Rendu2D.java
-        │   └── Rendu3D.java
-        └── ToolBar.java
+.
+├── build
+│   ├── Main.class
+│   ├── model
+│   │   ├── Cellule.class
+│   │   ├── Plateau.class
+│   │   └── observer
+│   │       ├── AbstractListenableModel.class
+│   │       ├── ListenableModel.class
+│   │       └── ModelListener.class
+│   └── view
+│       ├── CelluleView.class
+│       ├── FooterPanel$1.class
+│       ├── FooterPanel.class
+│       ├── Main.class
+│       ├── PlateauView.class
+│       └── Screen.class
+├── doc
+├── lib
+├── src
+│   ├── App.sh
+│   ├── Main.java
+│   ├── controller
+│   ├── icon.png
+│   ├── model
+│   │   ├── Cellule.java
+│   │   ├── Plateau.java
+│   │   └── observer
+│   │       ├── AbstractListenableModel.java
+│   │       ├── ListenableModel.java
+│   │       └── ModelListener.java
+│   └── view
+│       ├── CelluleView.java
+│       ├── FooterPanel.java
+│       ├── PlateauView.java
+│       └── Screen.java
+└── test
 
 
 
@@ -59,5 +66,5 @@ src
     DIALLO Aissatou
     ADEKOYA Boluwatife
     COTCHO D. Z. Patrice
-    LAYIZIA  Jérémie
+    ......  Jérémie
 

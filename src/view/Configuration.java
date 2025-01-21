@@ -7,7 +7,7 @@ import javax.swing.border.EmptyBorder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * Classe représentant le panneau de configuration de l'application.
  * Ce panneau permet à l'utilisateur de spécifier les paramètres de génération et de définir les règles.
  */
@@ -196,10 +196,9 @@ public class Configuration extends JPanel {
     }
 
    
-    /** 
-    * On supprime tous les TextFiels supplémentaire de Règle sur la vue sauf le premier
-    * Aussi on les supprime de la liste de textField
-    */
+    // On supprime tous les TextFiels supplémentaire de Règle sur la vue sauf le
+    // premier
+    // Aussi on les supprime de la liste de textField
     public void setDefaultConfiguration() {
         int nbTextField = this.listeRegleTextField.size();
         for (int i = nbTextField - 1; i >= 1; i--) {

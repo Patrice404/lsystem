@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.GeneratorException;
-import view.dialogue.Dialog;
+import view.dialogue.ErrorDialog;
 
 /**
  * Class Generateur : Le coeur de l'application
@@ -19,7 +19,7 @@ public class Generator {
     private List<Rule> regles;
 
    
-/**
+/* *
  * Constructeur de la classe Generator.
  * 
  * Initialise un générateur avec le symbole initial (axiom) et la liste de règles spécifiés.
@@ -34,7 +34,7 @@ public class Generator {
  */
      
     public Generator(String axiom, List<Rule> regles) throws GeneratorException {
-        if (Rule.rulesIsCorrect(regles)) {
+        if (rulesIsCorrect(regles)) {
             this.axiom = axiom;
             this.regles = regles;
         } else {
@@ -44,7 +44,38 @@ public class Generator {
     }
 
    
-
+/**
+ * Vérifie si les règles fournies sont correctement définies.
+ * 
+ * Cette méthode vérifie si les règles fournies respectent les conditions suivantes :
+ * - La liste de règles ne doit pas être nulle et doit contenir au moins une règle.
+ * - Pour chaque chaîne initiale de règles, la somme des pourcentages associés à ces règles
+ *   doit être égale à 100.
+ * 
+ * Si l'une de ces conditions n'est pas respectée, la méthode retourne false, indiquant que les
+ * règles ne sont pas correctes. Sinon, elle retourne true.
+ * 
+ * @param regles la liste de règles à vérifier.
+ * 
+ * @return true si les règles sont correctement définies, sinon false.
+ */
+    public boolean rulesIsCorrect(List<Rule> regles) {
+        if (regles != null && regles.size() > 0) {
+            List<String> initOfRules = this.getInitOfRules(regles);
+            for (String string : initOfRules) {
+                List<Rule> rules = rulesThatStartFrom(string, regles);
+                double sumPourcentage = 0;
+                for (Rule rule : rules) {
+                    sumPourcentage += rule.getPourcentage();
+                }
+                if (sumPourcentage != 100d) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Calcule l'état suivant d'une chaîne de symboles après une itération.
@@ -66,7 +97,6 @@ public class Generator {
      * @return la chaîne de symboles représentant l'état suivant après une
      *         itération.
      */
-
     public String etatSuivant(String etatActuel) {
         String resultat = "";
         List<Rule> randomListOfRules = buildListOfRules(this.regles);
@@ -86,7 +116,76 @@ public class Generator {
         return resultat;
     }
 
+    /**
+     * Récupère la liste des chaînes initiales uniques à partir d'une liste de
+     * règles.
+     * 
+     * Cette méthode parcourt la liste de règles spécifiée et récupère toutes les
+     * chaînes initiales
+     * uniques à partir de ces règles. Une chaîne initiale est considérée comme
+     * unique si elle n'est pas
+     * déjà présente dans la liste des chaînes initiales collectées.
+     * 
+     * @param list la liste de règles à partir de laquelle récupérer les chaînes
+     *             initiales.
+     * 
+     * @return une liste contenant toutes les chaînes initiales uniques présentes
+     *         dans la liste de règles spécifiée.
+     */
+    public List<String> getInitOfRules(List<Rule> list) {
+        List<String> initOfRules = new ArrayList<>();
+        for (Rule regle : list) {
+            String init = regle.getInitChaine();
+            if (!estPresent(init, initOfRules)) {
+                initOfRules.add(init);
+            }
+        }
+        return initOfRules;
+    }
 
+    /**
+     * Vérifie si une chaîne est présente dans une liste de chaînes.
+     * 
+     * Cette méthode parcourt la liste de chaînes spécifiée et vérifie si la chaîne
+     * spécifiée en paramètre est présente dans cette liste.
+     * 
+     * @param chaine la chaîne à rechercher dans la liste.
+     * @param list   la liste de chaînes dans laquelle rechercher.
+     * 
+     * @return true si la chaîne est présente dans la liste, sinon false.
+     */
+
+    public boolean estPresent(String chaine, List<String> list) {
+        for (String string : list) {
+            if (string.equals(chaine)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Récupère la liste des règles ayant une chaîne initiale spécifique.
+     * 
+     * Cette méthode parcourt la liste de règles spécifiée et récupère toutes les
+     * règles
+     * ayant la même chaîne initiale que celle spécifiée en paramètre.
+     * 
+     * @param chaine la chaîne initiale à partir de laquelle récupérer les règles.
+     * @param regles la liste de règles à parcourir.
+     * 
+     * @return une liste de règles ayant la même chaîne initiale que celle
+     *         spécifiée.
+     */
+    public List<Rule> rulesThatStartFrom(String chaine, List<Rule> regles) {
+        List<Rule> listofRules = new ArrayList<Rule>();
+        for (Rule rule : regles) {
+            if (rule.getInitChaine().equals(chaine)) {
+                listofRules.add(rule);
+            }
+        }
+        return listofRules;
+    }
 
     /**
      * Sélectionne aléatoirement une règle à partir d'une liste de règles, en
@@ -142,11 +241,11 @@ public class Generator {
 
     public List<Rule> buildListOfRules(List<Rule> listOfRules) {
         // initOfRules contient les chaines de départ de l'ensemble des règles
-        List<String> initOfRules = Rule.getInitOfRules(listOfRules);
+        List<String> initOfRules = getInitOfRules(listOfRules);
         List<Rule> resultat = new ArrayList<Rule>();
         for (String string : initOfRules) {
             // rules contient la liste des règles ayant un même départ
-            List<Rule> rules = Rule.rulesThatStartFrom(string, listOfRules);
+            List<Rule> rules = rulesThatStartFrom(string, listOfRules);
             // On tire parmi ces règles une règle aléatoirement et on l'ajoute à resultat
             resultat.add(selectRandomRule(rules));
         }
@@ -154,7 +253,7 @@ public class Generator {
 
     }
 
-    /**
+    /*
      * Méthode qui permet de générer la suite de symbole après nbItt ittération
      * 
      * @requires créer un objet Generateur en utilisant le constructeur définie
@@ -167,7 +266,7 @@ public class Generator {
         for (int i = 0; i < nbItt; i++) {
             etat = etatSuivant(etat);
             if(etat.length()>20000){
-                new Dialog(null, "Notification","Nombre de calcul trop grand.");
+                new ErrorDialog(null, "Calcul trop grand");
                 return "";
             }
         }
@@ -205,7 +304,7 @@ public class Generator {
      *                            inférieure à 0.
      */
     public void setGenerateur(String axiom, List<Rule> regles) throws GeneratorException {
-        if (Rule.rulesIsCorrect(regles)) {
+        if (rulesIsCorrect(regles)) {
             this.setAxiom(axiom);
             this.setRegles(regles);
         } else {
