@@ -9,7 +9,7 @@ import controler.AppController;
 import model.*;
 import utils.GeneratorException;
 
-public class Demo {
+public class Main {
     public static void main(String[] args) throws GeneratorException {
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
@@ -27,8 +27,6 @@ public class Demo {
 
         AppController controller = new AppController(windows, generateur, listeRegles);
 
-        // Chargement ch = new Chargement();
-        // ch.setVisible(true);
 
     }
 }
