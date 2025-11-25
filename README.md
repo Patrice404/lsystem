@@ -9,7 +9,7 @@
 - PATTERN MVC
 
 ## Prérequis
-- Installer Java(JDK) dans votre machine
+- Installer Java(JDK) sur votre machine
 
 ## Utilisation
 
