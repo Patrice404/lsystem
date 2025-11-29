@@ -1,6 +1,12 @@
 # Thème : Interpreteur de Lsystem
 
 ## Description
+Un L-System est un ensemble de règles et de symboles qui modélisent un processus de croissance d'êtres vivants comme des plantes ou des cellules. 
+Le concept central des L-Systems est la notion de réécriture. La réécriture est une technique pour construire des objets complexes en remplaçant 
+des parties d'un objet initial simple en utilisant des règles de réécriture.
+
+Pour ce faire, les cellules sont modélisées à l'aide de symboles. À chaque génération, les cellules se divisent,
+i.e. un symbole est remplacé par un ou plusieurs autres symboles formant un mot.
 
 ## Technologies Utilisées
 - JAVA 
@@ -18,8 +24,6 @@
 ./App.sh
 ```
 ## Structure du code source
-
-
 
 src
     ├── App.sh
@@ -52,12 +56,7 @@ src
         │   └── Rendu3D.java
         └── ToolBar.java
 
-
-
-
-## Auteur
+## Auteurs
     DIALLO Aissatou
     ADEKOYA Boluwatife
     COTCHO D. Z. Patrice
-    LAYIZIA  Jérémie
-
