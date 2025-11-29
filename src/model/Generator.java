@@ -265,7 +265,7 @@ public class Generator {
         String etat = String.valueOf(this.axiom);
         for (int i = 0; i < nbItt; i++) {
             etat = etatSuivant(etat);
-            if(etat.length()>20000){
+            if(etat.length()>1000000){
                 new ErrorDialog(null, "Calcul trop grand");
                 return "";
             }

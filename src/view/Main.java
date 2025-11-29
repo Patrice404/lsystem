@@ -27,6 +27,5 @@ public class Main {
 
         AppController controller = new AppController(windows, generateur, listeRegles);
 
-
     }
 }

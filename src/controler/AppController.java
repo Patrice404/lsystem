@@ -53,6 +53,11 @@ public class AppController implements ActionListener {
         this.windows.getToolbar().getArbre5Button().addActionListener(this::toolBarListener);
         this.windows.getToolbar().getArbre6Button().addActionListener(this::toolBarListener);
         this.windows.getToolbar().getArbre7Button().addActionListener(this::toolBarListener);
+        this.windows.getToolbar().getArbre8Button().addActionListener(this::toolBarListener);
+        this.windows.getToolbar().getArbre9Button().addActionListener(this::toolBarListener);
+        this.windows.getToolbar().getArbre10Button().addActionListener(this::toolBarListener);
+        this.windows.getToolbar().getArbre11Button().addActionListener(this::toolBarListener);
+        this.windows.getToolbar().getArbre12Button().addActionListener(this::toolBarListener);
         this.windows.getMenu().getApropos().addActionListener(this::helpItemListener);
         this.windows.getZoneRendu().getRendu2DBoutton().addActionListener(this::renduButtonListerner);
         this.windows.getZoneRendu().getRendu3DBoutton().addActionListener(this::renduButtonListerner);
@@ -86,7 +91,7 @@ public class AppController implements ActionListener {
             // Modification du generateur et du rendu
             try {
                 this.generateur.setGenerateur(axiom, listRegles);
-                // System.out.println(generateur.generate());
+
                 if (this.windows.getZoneRendu().getRendu2DBoutton().isSelected()) {
                     this.windows.getRendu2D().setRendu2D(this.generateur.generate(nbItt), angle);
                 } else {
@@ -103,10 +108,8 @@ public class AppController implements ActionListener {
                     
                     this.windows.getZoneRendu().getRendu().repaint();
                     this.windows.getZoneRendu().getRendu().setVisible(false);
-                    //this.windows.repaint();
-                    //this.windows.setVisible(false);
+                   
                     this.windows.getZoneRendu().getRendu().setVisible(true);
-                    //this.windows.setVisible(true);
 
                 }
             } catch (GeneratorException e) {
@@ -194,6 +197,64 @@ public class AppController implements ActionListener {
             this.genererButtonListener(event);
 
         }
+
+        if (event.getSource().equals(this.windows.getToolbar().getArbre8Button())) {
+            // Axiom => Y Règle => X:X[-FFF][+FFF]FX:100 and Y:YFX[+Y][-Y]:100 Angle => 25.7 Itteration => 5
+            List<String> regles = new ArrayList<>();
+            regles.add("X:X[-FFF][+FFF]FX:100");
+            regles.add("Y:YFX[+Y][-Y]:100");
+            this.setConfiguration("Y", 25.7f, 5, regles);
+            this.genererButtonListener(event);
+
+        }
+
+        if (event.getSource().equals(this.windows.getToolbar().getArbre9Button())) {
+            // Axiom => F Règle => F:F[+FF][-FF]F[-F][+F]F:100 Angle => 35 Itteration => 4
+            List<String> regles = new ArrayList<>();
+            regles.add("F:F[+FF][-FF]F[-F][+F]F:100");
+            this.setConfiguration("F", 35f, 4, regles);
+            this.genererButtonListener(event);
+
+        }
+
+        if (event.getSource().equals(this.windows.getToolbar().getArbre10Button())) {
+            // Axiom => FX Règle => X:>[-FX]+FX:100 Angle => 40 Itteration => 12
+            List<String> regles = new ArrayList<>();
+            regles.add("X:>[-FX]+FX:100");
+            this.setConfiguration("FX", 40f, 12, regles);
+            this.genererButtonListener(event);
+
+        }
+
+        if (event.getSource().equals(this.windows.getToolbar().getArbre11Button())) {
+            // Axiom => F+XF+F+XF Règle => X:XF-F+F-XF+F+XF-F+F-X:100 Angle => 90 Itteration => 5
+            List<String> regles = new ArrayList<>();
+            regles.add("X:XF-F+F-XF+F+XF-F+F-X:100");
+            this.setConfiguration("F+XF+F+XF", 90f, 5, regles);
+            this.genererButtonListener(event);
+
+        }
+
+        if (event.getSource().equals(this.windows.getToolbar().getArbre12Button())) {
+            // Axiom => F+F+F+F Règle => F:F+F-F-FF+F+F-F:100 Angle => 90 Itteration => 5
+            List<String> regles = new ArrayList<>();
+            regles.add("F:F+F-F-FF+F+F-F:100");
+            this.setConfiguration("F+F+F+F", 90f, 5, regles);
+            this.genererButtonListener(event);
+
+        }
+
+        /*
+            Des regles à essayer sur l'interface graphique
+            Crystal : axiom = F+F+F+F Règles : F:FF+F++F+F:100 angle = 90
+            Peano Curve : Axiom : X Règles : X:XFYFX+F+YFXFY-F-XFYFX and Y:YFXFY-F-XFYFX+F+YFXFY:100 angle = 90
+            Quadratic Snowflake : Axiom : F Règles : F:F-F+F+F-F:100 angle = 90
+            Variation by Hasan Hosam : axiom = X+X+X+X+X+X+X+X Règles : X:X+YF++YF-FX--FXFX-YF+X:100 and Y:-FX+YFYF++YF+FX--FX-YF:100 angle = 45
+            Board : axiom = F+F+F+F Règles : F:FF+F+F+F+FF angle = 90
+            Sierpinski Arrowhead : axiom = YF Règles : X:YF+XF+Y:100 and Y:XF-YF-X:100 angle = 60
+            Von Koch Snowflake : axiom = F++F++F Règles : F:F-F++F-F:100 angle = 60
+            Rings : axiom = F+F+F+F Règles : F:FF+F+F+F+F+F-F:100 angle = 90
+        */
         // F → FX[FX[+XF]] and X → FF[+XZ++X-F[+ZX]][-X++F-X] and Z → [+F-X-F][++ZX]
         // Axiom => X Regle => F → FF and X → F+[-F-XF-X][+FF][--XF[+X]][++F-X] Angle =>
         // 25° Itteration => 7
@@ -411,7 +472,6 @@ public class AppController implements ActionListener {
             // On crée les FieldText manquant
             for (int i = 1; i <= listRegles.size() - 1; i++) {
                 this.newRegleButtonListener(null);
-                // System.out.println("textFieldMaquant");
             }
             // On remplit les fieldTexts avec les règles
             for (int i = 0; i < this.windows.getConfiguration().getListeRegleTextField().size(); i++) {
@@ -421,9 +481,7 @@ public class AppController implements ActionListener {
 
     }
 
-    /*
-     * 
-     */
+
     public Interface getWindows() {
         return this.windows;
     }

@@ -60,3 +60,6 @@ src
     DIALLO Aissatou
     ADEKOYA Boluwatife
     COTCHO D. Z. Patrice
+
+## Infos
+    https://paulbourke.net/fractals/lsys/
